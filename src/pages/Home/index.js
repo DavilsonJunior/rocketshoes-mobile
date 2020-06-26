@@ -15,8 +15,8 @@ import {
   ProductContainer,
 } from './styles';
 
-// import { formatPrice } from '../../util/format';
 import * as CartActions from '../../store/modules/cart/actions';
+import { formatPrice } from '../../util/format';
 
 import json from '../../../server.json';
 
@@ -37,11 +37,10 @@ class Home extends Component {
 
       const data = response.map((product) => ({
         ...product,
-        // priceFormatted: formatPrice(product.price),
+        priceFormatted: formatPrice(product.price),
       }));
 
       this.setState({ products: data });
-      console.tron.log(products);
     } catch (err) {
       console.tron.log(err);
     }
@@ -54,6 +53,7 @@ class Home extends Component {
   };
 
   renderProduct = ({ item }) => {
+    const { amount } = this.props;
     return (
       <Product key={item.id}>
         <ProductImage
@@ -64,10 +64,10 @@ class Home extends Component {
         />
         <ProductContainer>
           <ProductTitle>{item.title}</ProductTitle>
-          <ProductPrice>{item.price}</ProductPrice>
+          <ProductPrice>{item.priceFormatted}</ProductPrice>
           <ProductAddButton onPress={() => this.handleAddProduct(item)}>
             <ProductAmount>
-              <ProductAmountText>2</ProductAmountText>
+              <ProductAmountText>{amount[item.id] || 0}</ProductAmountText>
             </ProductAmount>
             <ProductAddButtonText>ADICIONAR</ProductAddButtonText>
           </ProductAddButton>
@@ -97,7 +97,11 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  cart: state.cart,
+  amount: state.cart.reduce((amount, product) => {
+    amount[product.id] = product.amount;
+
+    return amount;
+  }, {}),
 });
 
 const mapDispatchToProps = (dispatch) =>

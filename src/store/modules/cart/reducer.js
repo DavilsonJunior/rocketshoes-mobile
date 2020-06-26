@@ -3,12 +3,12 @@ import produce from 'immer';
 export default function cart(state = [], action) {
   console.tron.log(state);
   switch (action.type) {
-    case 'ADD_TO_CART':
+    case '@cart/ADD':
       return produce(state, (draft) => {
-        const findIndex = draft.findIndex((p) => p.id === action.product.id);
+        const productIndex = draft.findIndex((p) => p.id === action.product.id);
 
-        if (findIndex >= 0) {
-          draft[findIndex].amount += 1;
+        if (productIndex >= 0) {
+          draft[productIndex].amount += 1;
         } else {
           draft.push({
             ...action.product,
@@ -16,7 +16,27 @@ export default function cart(state = [], action) {
           });
         }
       });
+    case '@cart/REMOVE':
+      return produce(state, (draft) => {
+        const productIndex = draft.findIndex((p) => p.id === action.id);
 
+        if (productIndex >= 0) {
+          draft.splice(productIndex, 1);
+        }
+      });
+    case '@cart/UPDATE_AMOUNT': {
+      if (action.amount <= 0) {
+        return state;
+      }
+
+      return produce(state, (draft) => {
+        const productIndex = draft.findIndex((p) => (p.id = action.id));
+
+        if (productIndex >= 0) {
+          draft[productIndex].amount = Number(action.amount);
+        }
+      });
+    }
     default:
       return state;
   }

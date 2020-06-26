@@ -54,7 +54,6 @@ export const ProductAmount = styled.View`
   background: #fff;
   justify-content: flex-start;
   align-items: center;
-  margin-left: 40px;
   padding: 3px 10px;
   border-radius: 4px;
 `;
@@ -89,4 +88,9 @@ export const DoneButtonText = styled.Text`
   font-size: 14px;
   font-weight: bold;
   color: #fff;
+`;
+
+export const IconButton = styled(RectButton)`
+  width: 22px;
+  height: 22px;
 `;
